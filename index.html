@@ -184,11 +184,11 @@
           maxlength="100"></textarea>
         <div class="char-count"><span id="char-count">0</span> / 100</div>
 
-        <!-- Font size -->
-        <div class="label-opts">
-          <button class="label-size-btn active" data-fsize="13">小字</button>
-          <button class="label-size-btn" data-fsize="16">中字</button>
-          <button class="label-size-btn" data-fsize="20">大字</button>
+        <!-- Font size slider -->
+        <div class="slider-row" style="margin-top:8px">
+          <label>字級</label>
+          <input type="range" id="font-size-slider" min="10" max="48" value="14">
+          <span id="font-size-val">14px</span>
         </div>
 
         <!-- Text color -->
@@ -238,6 +238,26 @@
             <button class="line-style-btn" data-lstyle="dashed">虛線</button>
             <button class="line-style-btn" data-lstyle="none">無線</button>
           </div>
+        </div>
+
+        <!-- Indicator line width -->
+        <div class="slider-row" style="margin-top:8px">
+          <label>線粗</label>
+          <input type="range" id="line-width-slider" min="2" max="12" value="2">
+          <span id="line-width-val">2px</span>
+        </div>
+
+        <!-- Indicator line color -->
+        <div class="label-color-row" style="margin-top:6px">
+          <label>線條顏色</label>
+          <input type="color" id="line-color" class="color-picker-btn" value="#ffffff">
+        </div>
+
+        <!-- Label gap -->
+        <div class="slider-row" style="margin-top:8px">
+          <label>距離</label>
+          <input type="range" id="label-gap-slider" min="10" max="100" value="20">
+          <span id="label-gap-val">20px</span>
         </div>
       </div>
 
@@ -297,10 +317,13 @@ const state = {
   // ball defaults
   color: '#c0392b', size: 18, opacity: 1.0,
   // label defaults
-  labelText: '', labelFontSize: 13, labelColor: '#ffffff',
+  labelText: '', labelFontSize: 14, labelColor: '#ffffff',
   labelFont: "'Noto Serif TC', serif",
-  labelPos: 'top',       // top | bottom | left | right | top-left | top-right | bottom-left | bottom-right
-  lineStyle: 'solid',    // solid | dashed | none
+  labelPos: 'top',
+  labelGap: 20,          // px distance from ball edge to label box
+  lineStyle: 'solid',
+  lineWidth: 2,          // px indicator line width
+  lineColor: '#ffffff',  // indicator line color
   // app
   exportFmt: 'png', history: [], historyIdx: -1,
   dpr: window.devicePixelRatio || 1, scale: 1,
@@ -411,13 +434,27 @@ labelInput.addEventListener('input', () => {
   charCount.textContent = labelInput.value.length;
 });
 
-// ── Font size buttons ──
-document.querySelectorAll('.label-size-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.label-size-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.labelFontSize = parseInt(btn.dataset.fsize);
-  });
+// ── Font size slider ──
+document.getElementById('font-size-slider').addEventListener('input', e => {
+  state.labelFontSize = parseInt(e.target.value);
+  document.getElementById('font-size-val').textContent = e.target.value + 'px';
+});
+
+// ── Line width slider ──
+document.getElementById('line-width-slider').addEventListener('input', e => {
+  state.lineWidth = parseInt(e.target.value);
+  document.getElementById('line-width-val').textContent = e.target.value + 'px';
+});
+
+// ── Line color ──
+document.getElementById('line-color').addEventListener('input', e => {
+  state.lineColor = e.target.value;
+});
+
+// ── Label gap slider ──
+document.getElementById('label-gap-slider').addEventListener('input', e => {
+  state.labelGap = parseInt(e.target.value);
+  document.getElementById('label-gap-val').textContent = e.target.value + 'px';
 });
 
 // ── 3D Ball renderer ──
@@ -458,7 +495,7 @@ function draw3DBall(ctx2, cx, cy, r, hexColor, alpha) {
 // Returns the anchor point on the ball edge and the label box origin
 function getLabelLayout(b, scale) {
   const cx = b.x * scale, cy = b.y * scale, r = b.size * scale;
-  const gap = 10 * scale;   // gap between ball edge and text box
+  const gap = (b.labelGap || 20) * scale;   // user-defined gap between ball edge and label
   const pos = b.labelPos || 'top';
 
   // Direction vector from center outward
@@ -487,9 +524,11 @@ function drawLabel(ctx2, b, scale) {
   const text = b.label;
   if (!text) return;
 
-  const fs = (b.fontSize || 13) * scale;
+  const fs = (b.fontSize || 14) * scale;
   const color = b.labelColor || '#ffffff';
   const lineStyle = b.lineStyle || 'solid';
+  const lineColor = b.lineColor || '#ffffff';
+  const lineWidth = (b.lineWidth || 2) * scale;
   const fontFamily = b.labelFont || "'Noto Serif TC', serif";
   const layout = getLabelLayout(b, scale);
   const { dx, dy, edgeX, edgeY, anchorX, anchorY } = layout;
@@ -539,8 +578,8 @@ function drawLabel(ctx2, b, scale) {
     if (pos === 'bottom-right') { lineEndX = boxX;          lineEndY = boxY; }
 
     ctx2.save();
-    ctx2.strokeStyle = color;
-    ctx2.lineWidth = Math.max(1, 1.2 * scale);
+    ctx2.strokeStyle = lineColor;
+    ctx2.lineWidth = lineWidth;
     if (lineStyle === 'dashed') {
       ctx2.setLineDash([4 * scale, 3 * scale]);
     } else {
@@ -650,7 +689,8 @@ canvas.addEventListener('mousedown', e => {
       size: state.size, color: state.color, opacity: state.opacity,
       label: state.labelText, fontSize: state.labelFontSize,
       labelColor: state.labelColor, labelFont: state.labelFont,
-      labelPos: state.labelPos, lineStyle: state.lineStyle,
+      labelPos: state.labelPos, labelGap: state.labelGap,
+      lineStyle: state.lineStyle, lineWidth: state.lineWidth, lineColor: state.lineColor,
     };
     state.balls.push(ball);
     state.selectedId = ball.id;
