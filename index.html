@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>針灸定位影像編輯器</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=LXGW+WenKai+TC&family=Ma+Shan+Zheng&family=Zhi+Mang+Xing&family=Kaisei+Tokumin:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   :root {
@@ -66,6 +66,13 @@
   /* Label color row */
   .label-color-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
   .label-color-row label { font-size: 11px; color: var(--text-muted); flex: 1; }
+
+  /* Font selector */
+  .font-select-wrap { margin-top: 8px; }
+  .font-select-wrap label { font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 5px; }
+  #font-select { width: 100%; background: var(--surface); border: 1px solid var(--panel-border); border-radius: var(--radius); color: var(--text); padding: 5px 8px; font-size: 12px; outline: none; cursor: pointer; transition: border-color .15s; appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237a7672' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 8px center; }
+  #font-select:focus { border-color: var(--accent); }
+  #font-select option { font-size: 13px; background: #1e1e1e; }
 
   /* Label position selector */
   .pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 4px; width: 96px; margin: 8px auto 0; }
@@ -190,6 +197,19 @@
           <input type="color" id="label-color" class="color-picker-btn" value="#ffffff">
         </div>
 
+        <!-- Font family -->
+        <div class="font-select-wrap">
+          <label>文字字型</label>
+          <select id="font-select">
+            <option value="'Noto Serif TC', serif"       data-preview="Noto Serif TC">思源宋體（Noto Serif TC）</option>
+            <option value="'Noto Sans TC', sans-serif"   data-preview="Noto Sans TC">思源黑體（Noto Sans TC）</option>
+            <option value="'LXGW WenKai TC', cursive"   data-preview="LXGW WenKai TC">霞鶩文楷（WenKai TC）</option>
+            <option value="'Ma Shan Zheng', cursive"    data-preview="Ma Shan Zheng">馬善政毛筆楷書</option>
+            <option value="'Zhi Mang Xing', cursive"    data-preview="Zhi Mang Xing">芝芒行書</option>
+            <option value="'Kaisei Tokumin', serif"      data-preview="Kaisei Tokumin">Kaisei Tokumin</option>
+          </select>
+        </div>
+
         <!-- Label position -->
         <div style="margin-top:10px">
           <div class="s-label" style="margin-bottom:4px">標籤位置</div>
@@ -278,6 +298,7 @@ const state = {
   color: '#c0392b', size: 18, opacity: 1.0,
   // label defaults
   labelText: '', labelFontSize: 13, labelColor: '#ffffff',
+  labelFont: "'Noto Serif TC', serif",
   labelPos: 'top',       // top | bottom | left | right | top-left | top-right | bottom-left | bottom-right
   lineStyle: 'solid',    // solid | dashed | none
   // app
@@ -342,6 +363,11 @@ document.getElementById('custom-color').addEventListener('input', e => {
 // ── Label color ──
 document.getElementById('label-color').addEventListener('input', e => {
   state.labelColor = e.target.value;
+});
+
+// ── Font family ──
+document.getElementById('font-select').addEventListener('change', e => {
+  state.labelFont = e.target.value;
 });
 
 // ── Position grid ──
@@ -464,44 +490,43 @@ function drawLabel(ctx2, b, scale) {
   const fs = (b.fontSize || 13) * scale;
   const color = b.labelColor || '#ffffff';
   const lineStyle = b.lineStyle || 'solid';
+  const fontFamily = b.labelFont || "'Noto Serif TC', serif";
   const layout = getLabelLayout(b, scale);
   const { dx, dy, edgeX, edgeY, anchorX, anchorY } = layout;
   const pos = b.labelPos || 'top';
 
   // Prepare font
-  ctx2.font = `${fs}px 'Noto Serif TC', serif`;
+  const fontStr = `${fs}px ${fontFamily}`;
+  ctx2.font = fontStr;
   ctx2.textBaseline = 'top';
 
   // Split into lines
   const lines = text.split('\n');
-  const lineH = fs * 1.6;
+  // 行距 = 字體大小 + 4px（固定間距，scale 補償）
+  const lineGap = 4 * scale;
+  const lineH = fs + lineGap;
   const maxW = Math.max(...lines.map(l => ctx2.measureText(l).width));
-  const totalH = lines.length * lineH;
+  const totalH = lines.length * fs + (lines.length - 1) * lineGap;
 
   // Compute text box top-left based on position
   let boxX, boxY;
-  // Horizontal alignment
   if (pos === 'right' || pos === 'top-right' || pos === 'bottom-right') {
     boxX = anchorX;
   } else if (pos === 'left' || pos === 'top-left' || pos === 'bottom-left') {
     boxX = anchorX - maxW;
   } else {
-    // top / bottom: center
     boxX = anchorX - maxW / 2;
   }
-  // Vertical alignment
   if (pos === 'bottom' || pos === 'bottom-left' || pos === 'bottom-right') {
     boxY = anchorY;
   } else if (pos === 'top' || pos === 'top-left' || pos === 'top-right') {
     boxY = anchorY - totalH;
   } else {
-    // left / right: vertically center
     boxY = anchorY - totalH / 2;
   }
 
   // ── Draw indicator line ──
   if (lineStyle !== 'none') {
-    // Line endpoint: edge of text box closest to ball
     let lineEndX = boxX + maxW / 2;
     let lineEndY = boxY + totalH / 2;
     if (pos === 'top')          { lineEndX = boxX + maxW/2; lineEndY = boxY + totalH; }
@@ -530,12 +555,11 @@ function drawLabel(ctx2, b, scale) {
     ctx2.restore();
   }
 
-  // ── Draw text (no background, transparent) ──
+  // ── Draw text ──
   ctx2.save();
-  ctx2.font = `${fs}px 'Noto Serif TC', serif`;
+  ctx2.font = fontStr;
   ctx2.textBaseline = 'top';
   ctx2.fillStyle = color;
-  // Subtle text shadow for legibility on any background
   ctx2.shadowColor = 'rgba(0,0,0,0.85)';
   ctx2.shadowBlur = Math.max(3, 4 * scale);
   ctx2.shadowOffsetX = 0;
@@ -625,7 +649,7 @@ canvas.addEventListener('mousedown', e => {
       id: nextId++, x, y,
       size: state.size, color: state.color, opacity: state.opacity,
       label: state.labelText, fontSize: state.labelFontSize,
-      labelColor: state.labelColor,
+      labelColor: state.labelColor, labelFont: state.labelFont,
       labelPos: state.labelPos, lineStyle: state.lineStyle,
     };
     state.balls.push(ball);
