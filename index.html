@@ -16,131 +16,221 @@
   }
   html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 13px; overflow: hidden; }
   #app { display: flex; height: 100vh; }
-  #sidebar { width: 240px; min-width: 240px; background: var(--panel); border-right: 1px solid var(--panel-border); display: flex; flex-direction: column; overflow: hidden; }
+  #sidebar { width: 248px; min-width: 248px; background: var(--panel); border-right: 1px solid var(--panel-border); display: flex; flex-direction: column; overflow: hidden; }
   #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
   #toolbar { height: 44px; background: var(--panel); border-bottom: 1px solid var(--panel-border); display: flex; align-items: center; gap: 6px; padding: 0 12px; flex-shrink: 0; }
   #canvas-area { flex: 1; overflow: auto; display: flex; align-items: center; justify-content: center; background: #080808; background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px); background-size: 24px 24px; cursor: crosshair; position: relative; }
   #canvas-wrapper { position: relative; display: inline-block; line-height: 0; }
-  #main-canvas { display: block; max-width: 100%; max-height: calc(100vh - 44px); cursor: crosshair; }
-  .sidebar-logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--panel-border); }
+  #main-canvas { display: block; cursor: crosshair; }
+
+  /* Sidebar */
+  .sidebar-logo { padding: 16px 16px 12px; border-bottom: 1px solid var(--panel-border); flex-shrink: 0; }
   .sidebar-logo h1 { font-family: var(--font-display); font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: .05em; line-height: 1.4; }
   .sidebar-logo span { color: var(--accent); }
-  .sidebar-logo p { font-size: 10px; color: var(--text-muted); margin-top: 3px; letter-spacing: .08em; }
-  .s-section { padding: 14px 16px; border-bottom: 1px solid var(--panel-border); }
-  .s-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; font-weight: 500; }
-  .color-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-  .color-swatch { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform .15s, border-color .15s; }
+  .sidebar-logo p { font-size: 10px; color: var(--text-muted); margin-top: 2px; letter-spacing: .08em; }
+  .sidebar-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+  .sidebar-body::-webkit-scrollbar { width: 4px; }
+  .sidebar-body::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 2px; }
+  .s-section { padding: 12px 16px; border-bottom: 1px solid var(--panel-border); flex-shrink: 0; }
+  .s-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 9px; font-weight: 500; }
+
+  /* Color grid */
+  .color-grid { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 9px; }
+  .color-swatch { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: transform .15s, border-color .15s; }
   .color-swatch:hover { transform: scale(1.15); }
   .color-swatch.active { border-color: #fff; transform: scale(1.15); }
-  .custom-color-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+  .custom-color-row { display: flex; align-items: center; gap: 8px; }
   .custom-color-row label { font-size: 11px; color: var(--text-muted); flex: 1; }
-  #custom-color { width: 36px; height: 24px; border: none; border-radius: 4px; cursor: pointer; background: none; padding: 0; }
-  .slider-row { display: flex; align-items: center; gap: 10px; }
-  .slider-row label { font-size: 11px; color: var(--text-muted); width: 24px; flex-shrink: 0; }
+  .color-picker-btn { width: 32px; height: 22px; border: none; border-radius: 4px; cursor: pointer; background: none; padding: 0; }
+
+  /* Sliders */
+  .slider-row { display: flex; align-items: center; gap: 8px; }
+  .slider-row label { font-size: 11px; color: var(--text-muted); width: 26px; flex-shrink: 0; }
   .slider-row input[type=range] { flex: 1; -webkit-appearance: none; appearance: none; height: 3px; background: var(--surface2); border-radius: 2px; outline: none; }
-  .slider-row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent-light); cursor: pointer; border: 2px solid var(--bg); box-shadow: 0 0 6px var(--accent-glow); }
-  .slider-row span { font-size: 11px; color: var(--text); width: 32px; text-align: right; }
-  #ball-preview-wrap { display: flex; align-items: center; justify-content: center; padding: 12px 0 4px; }
-  #ball-preview { display: block; }
-  .label-row { display: flex; flex-direction: column; gap: 6px; }
-  .label-row input { background: var(--surface); border: 1px solid var(--panel-border); border-radius: var(--radius); color: var(--text); padding: 7px 10px; font-size: 12px; font-family: var(--font-body); outline: none; transition: border-color .15s; width: 100%; }
-  .label-row input:focus { border-color: var(--accent); }
-  .label-row input::placeholder { color: var(--text-dim); }
-  .label-opts { display: flex; gap: 6px; }
-  .label-size-btn { flex: 1; padding: 5px 0; background: var(--surface); border: 1px solid var(--panel-border); border-radius: var(--radius); color: var(--text-muted); cursor: pointer; font-size: 11px; transition: all .15s; font-family: var(--font-body); }
+  .slider-row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--accent-light); cursor: pointer; border: 2px solid var(--bg); box-shadow: 0 0 5px var(--accent-glow); }
+  .slider-row span { font-size: 11px; color: var(--text); width: 30px; text-align: right; flex-shrink: 0; }
+
+  /* Preview */
+  #ball-preview-wrap { display: flex; align-items: center; justify-content: center; padding: 10px 0 4px; }
+
+  /* Label section */
+  .label-textarea { width: 100%; background: var(--surface); border: 1px solid var(--panel-border); border-radius: var(--radius); color: var(--text); padding: 7px 10px; font-size: 12px; font-family: var(--font-body); outline: none; transition: border-color .15s; resize: none; height: 72px; line-height: 1.55; }
+  .label-textarea:focus { border-color: var(--accent); }
+  .label-textarea::placeholder { color: var(--text-dim); }
+  .char-count { font-size: 10px; color: var(--text-dim); text-align: right; margin-top: 3px; }
+
+  .label-opts { display: flex; gap: 5px; margin-top: 8px; }
+  .label-size-btn { flex: 1; padding: 4px 0; background: var(--surface); border: 1px solid var(--panel-border); border-radius: var(--radius); color: var(--text-muted); cursor: pointer; font-size: 11px; transition: all .15s; font-family: var(--font-body); }
   .label-size-btn.active, .label-size-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--accent); }
-  #ball-list-wrap { flex: 1; overflow-y: auto; padding: 0 0 8px; }
+
+  /* Label color row */
+  .label-color-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .label-color-row label { font-size: 11px; color: var(--text-muted); flex: 1; }
+
+  /* Label position selector */
+  .pos-grid { display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 4px; width: 96px; margin: 8px auto 0; }
+  .pos-btn { width: 28px; height: 28px; background: var(--surface); border: 1px solid var(--panel-border); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all .15s; line-height: 1; }
+  .pos-btn:hover { background: var(--surface2); border-color: var(--text-muted); }
+  .pos-btn.active { background: var(--accent); border-color: var(--accent); }
+  .pos-btn.center-dot { background: none; border: none; cursor: default; font-size: 10px; color: var(--text-dim); }
+  .pos-label-hint { font-size: 10px; color: var(--text-dim); text-align: center; margin-top: 5px; }
+
+  /* Line style */
+  .line-style-row { display: flex; gap: 5px; margin-top: 8px; }
+  .line-style-btn { flex: 1; padding: 4px 0; background: var(--surface); border: 1px solid var(--panel-border); border-radius: var(--radius); color: var(--text-muted); cursor: pointer; font-size: 10px; transition: all .15s; font-family: var(--font-body); text-align: center; }
+  .line-style-btn.active, .line-style-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--accent); }
+
+  /* Ball list */
+  .ball-list-label { padding: 9px 16px 3px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; flex-shrink: 0; }
+  #ball-list-wrap { flex: 1; overflow-y: auto; padding: 0 0 8px; min-height: 60px; }
   #ball-list-wrap::-webkit-scrollbar { width: 4px; }
   #ball-list-wrap::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 2px; }
-  .ball-item { display: flex; align-items: center; gap: 8px; padding: 7px 16px; cursor: pointer; transition: background .1s; border-left: 2px solid transparent; }
+  .ball-item { display: flex; align-items: center; gap: 7px; padding: 6px 16px; cursor: pointer; transition: background .1s; border-left: 2px solid transparent; }
   .ball-item:hover { background: var(--surface); }
   .ball-item.selected { background: var(--surface); border-left-color: var(--accent); }
-  .ball-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-  .ball-name { flex: 1; font-size: 12px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .ball-size-text { font-size: 10px; color: var(--text-dim); }
-  .ball-del { width: 18px; height: 18px; border-radius: 3px; background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: color .15s, background .15s; line-height: 1; flex-shrink: 0; }
+  .ball-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+  .ball-name { flex: 1; font-size: 11px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ball-size-text { font-size: 10px; color: var(--text-dim); flex-shrink: 0; }
+  .ball-del { width: 17px; height: 17px; border-radius: 3px; background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: color .15s, background .15s; line-height: 1; flex-shrink: 0; }
   .ball-del:hover { color: var(--accent-light); background: rgba(231,76,60,.1); }
-  .ball-list-label { padding: 10px 16px 4px; font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-dim); font-weight: 500; }
-  .ball-list-empty { padding: 16px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.6; }
-  .tb-btn { height: 28px; padding: 0 12px; border-radius: var(--radius); border: 1px solid var(--panel-border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 12px; font-family: var(--font-body); display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: all .15s; }
+  .ball-list-empty { padding: 14px 16px; font-size: 11px; color: var(--text-dim); text-align: center; line-height: 1.6; }
+
+  /* Toolbar */
+  .tb-btn { height: 28px; padding: 0 11px; border-radius: var(--radius); border: 1px solid var(--panel-border); background: var(--surface); color: var(--text); cursor: pointer; font-size: 12px; font-family: var(--font-body); display: flex; align-items: center; gap: 5px; white-space: nowrap; transition: all .15s; }
   .tb-btn:hover { border-color: var(--text-muted); background: var(--surface2); }
   .tb-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .tb-btn.primary:hover { background: var(--accent-light); border-color: var(--accent-light); }
   .tb-btn.danger:hover { border-color: var(--accent); color: var(--accent-light); }
   .tb-btn:disabled { opacity: .35; cursor: not-allowed; }
-  .tb-sep { width: 1px; height: 20px; background: var(--panel-border); margin: 0 4px; }
-  .tb-file-info { font-size: 11px; color: var(--text-muted); margin-left: 4px; }
+  .tb-sep { width: 1px; height: 20px; background: var(--panel-border); margin: 0 3px; }
+  .tb-file-info { font-size: 11px; color: var(--text-muted); margin-left: 3px; }
   .tb-spacer { flex: 1; }
   .export-wrap { display: flex; gap: 4px; }
   .fmt-btn { height: 28px; padding: 0 8px; border-radius: var(--radius); border: 1px solid var(--panel-border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-size: 11px; font-family: var(--font-body); transition: all .15s; }
   .fmt-btn.active { border-color: var(--accent); color: var(--text); background: var(--surface2); }
   .fmt-btn:hover { border-color: var(--text-muted); color: var(--text); }
-  .zoom-info { font-size: 11px; color: var(--text-dim); margin-right: 8px; }
+  .zoom-info { font-size: 11px; color: var(--text-dim); margin-right: 6px; }
+
+  /* Drop overlay & toast */
   #drop-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.85); display: flex; align-items: center; justify-content: center; z-index: 100; opacity: 0; pointer-events: none; transition: opacity .2s; flex-direction: column; gap: 12px; }
   #drop-overlay.active { opacity: 1; pointer-events: all; }
   #drop-overlay p { font-size: 20px; color: var(--text); font-family: var(--font-display); }
   #drop-overlay small { font-size: 13px; color: var(--text-muted); }
-  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--surface2); border: 1px solid var(--panel-border); border-radius: var(--radius); padding: 8px 16px; font-size: 12px; color: var(--text); opacity: 0; transition: opacity .2s, transform .2s; z-index: 200; pointer-events: none; white-space: nowrap; }
+  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(10px); background: var(--surface2); border: 1px solid var(--panel-border); border-radius: var(--radius); padding: 7px 15px; font-size: 12px; color: var(--text); opacity: 0; transition: opacity .2s, transform .2s; z-index: 200; pointer-events: none; white-space: nowrap; }
   #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  #welcome { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; pointer-events: none; }
-  #welcome h2 { font-family: var(--font-display); font-size: 22px; color: var(--text-dim); font-weight: 400; }
+
+  /* Welcome */
+  #welcome { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; pointer-events: none; }
+  #welcome h2 { font-family: var(--font-display); font-size: 20px; color: var(--text-dim); font-weight: 400; }
   #welcome p { font-size: 13px; color: var(--text-dim); }
-  #welcome .welcome-icon { font-size: 48px; opacity: .2; }
+  #welcome .welcome-icon { font-size: 44px; opacity: .18; }
 </style>
 </head>
 <body>
 <div id="drop-overlay">
-  <p>放開以載入影像</p>
-  <small>支援 JPG、PNG、WebP</small>
+  <p>放開以載入影像</p><small>支援 JPG、PNG、WebP</small>
 </div>
 <div id="toast"></div>
 <div id="app">
+  <!-- Sidebar -->
   <div id="sidebar">
     <div class="sidebar-logo">
       <h1>針灸<span>定位</span>編輯器</h1>
       <p>ACUPUNCTURE POINT EDITOR</p>
     </div>
-    <div class="s-section">
-      <div class="s-label">圓球顏色</div>
-      <div class="color-grid" id="color-grid"></div>
-      <div class="custom-color-row">
-        <label>自訂顏色</label>
-        <input type="color" id="custom-color" value="#c0392b">
-      </div>
-    </div>
-    <div class="s-section">
-      <div class="s-label">圓球預覽</div>
-      <div id="ball-preview-wrap">
-        <canvas id="ball-preview" width="60" height="60"></canvas>
-      </div>
-      <div class="slider-row" style="margin-top:10px">
-        <label>大小</label>
-        <input type="range" id="size-slider" min="4" max="80" value="18">
-        <span id="size-val">18</span>
-      </div>
-      <div class="slider-row" style="margin-top:8px">
-        <label>透明</label>
-        <input type="range" id="opacity-slider" min="20" max="100" value="100">
-        <span id="opacity-val">100%</span>
-      </div>
-    </div>
-    <div class="s-section">
-      <div class="s-label">穴位標籤</div>
-      <div class="label-row">
-        <input type="text" id="label-input" placeholder="輸入穴位名稱（可空白）" maxlength="20">
-        <div class="label-opts">
-          <button class="label-size-btn active" data-fsize="13">小</button>
-          <button class="label-size-btn" data-fsize="16">中</button>
-          <button class="label-size-btn" data-fsize="20">大</button>
+    <div class="sidebar-body">
+
+      <!-- Ball color -->
+      <div class="s-section">
+        <div class="s-label">圓球顏色</div>
+        <div class="color-grid" id="color-grid"></div>
+        <div class="custom-color-row">
+          <label>自訂顏色</label>
+          <input type="color" id="custom-color" class="color-picker-btn" value="#c0392b">
         </div>
       </div>
-    </div>
-    <div class="ball-list-label">已放置圓球</div>
-    <div id="ball-list-wrap">
-      <div class="ball-list-empty" id="ball-list-empty">尚未放置任何圓球<br>點擊影像開始標記</div>
-      <div id="ball-list"></div>
+
+      <!-- Ball preview + size/opacity -->
+      <div class="s-section">
+        <div class="s-label">圓球設定</div>
+        <div id="ball-preview-wrap">
+          <canvas id="ball-preview" width="60" height="60"></canvas>
+        </div>
+        <div class="slider-row" style="margin-top:10px">
+          <label>大小</label>
+          <input type="range" id="size-slider" min="4" max="80" value="18">
+          <span id="size-val">18</span>
+        </div>
+        <div class="slider-row" style="margin-top:7px">
+          <label>透明</label>
+          <input type="range" id="opacity-slider" min="20" max="100" value="100">
+          <span id="opacity-val">100%</span>
+        </div>
+      </div>
+
+      <!-- Label section -->
+      <div class="s-section">
+        <div class="s-label">穴位標籤</div>
+        <!-- Textarea with Shift+Enter newline -->
+        <textarea id="label-input" class="label-textarea"
+          placeholder="輸入穴位名稱（可空白）&#10;Shift+Enter 換行，最多100字"
+          maxlength="100"></textarea>
+        <div class="char-count"><span id="char-count">0</span> / 100</div>
+
+        <!-- Font size -->
+        <div class="label-opts">
+          <button class="label-size-btn active" data-fsize="13">小字</button>
+          <button class="label-size-btn" data-fsize="16">中字</button>
+          <button class="label-size-btn" data-fsize="20">大字</button>
+        </div>
+
+        <!-- Text color -->
+        <div class="label-color-row">
+          <label>文字顏色</label>
+          <input type="color" id="label-color" class="color-picker-btn" value="#ffffff">
+        </div>
+
+        <!-- Label position -->
+        <div style="margin-top:10px">
+          <div class="s-label" style="margin-bottom:4px">標籤位置</div>
+          <div class="pos-grid" id="pos-grid">
+            <!-- row 1 -->
+            <button class="pos-btn" data-pos="top-left"    title="左上">↖</button>
+            <button class="pos-btn active" data-pos="top"  title="上方">↑</button>
+            <button class="pos-btn" data-pos="top-right"   title="右上">↗</button>
+            <!-- row 2 -->
+            <button class="pos-btn" data-pos="left"        title="左方">←</button>
+            <div class="pos-btn center-dot">●</div>
+            <button class="pos-btn" data-pos="right"       title="右方">→</button>
+            <!-- row 3 -->
+            <button class="pos-btn" data-pos="bottom-left" title="左下">↙</button>
+            <button class="pos-btn" data-pos="bottom"      title="下方">↓</button>
+            <button class="pos-btn" data-pos="bottom-right" title="右下">↘</button>
+          </div>
+          <div class="pos-label-hint" id="pos-hint">上方</div>
+        </div>
+
+        <!-- Indicator line style -->
+        <div style="margin-top:8px">
+          <div class="s-label" style="margin-bottom:4px">指示線樣式</div>
+          <div class="line-style-row">
+            <button class="line-style-btn active" data-lstyle="solid">實線</button>
+            <button class="line-style-btn" data-lstyle="dashed">虛線</button>
+            <button class="line-style-btn" data-lstyle="none">無線</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ball list -->
+      <div class="ball-list-label">已放置圓球</div>
+      <div id="ball-list-wrap">
+        <div class="ball-list-empty" id="ball-list-empty">尚未放置任何圓球<br>點擊影像開始標記</div>
+        <div id="ball-list"></div>
+      </div>
     </div>
   </div>
+
+  <!-- Main -->
   <div id="main">
     <div id="toolbar">
       <button class="tb-btn" id="load-btn">
@@ -178,207 +268,339 @@
     </div>
   </div>
 </div>
+
 <script>
+// ── State ──
 const state = {
-  img: null, imgW: 0, imgH: 0, balls: [], selectedId: null,
-  color: '#c0392b', size: 18, opacity: 1.0, labelText: '', labelFontSize: 13,
+  img: null, imgW: 0, imgH: 0,
+  balls: [], selectedId: null,
+  // ball defaults
+  color: '#c0392b', size: 18, opacity: 1.0,
+  // label defaults
+  labelText: '', labelFontSize: 13, labelColor: '#ffffff',
+  labelPos: 'top',       // top | bottom | left | right | top-left | top-right | bottom-left | bottom-right
+  lineStyle: 'solid',    // solid | dashed | none
+  // app
   exportFmt: 'png', history: [], historyIdx: -1,
   dpr: window.devicePixelRatio || 1, scale: 1,
   dragId: null, dragOffX: 0, dragOffY: 0,
 };
 let nextId = 1;
 
-const canvas = document.getElementById('main-canvas');
-const ctx = canvas.getContext('2d');
-const previewCanvas = document.getElementById('ball-preview');
-const previewCtx = previewCanvas.getContext('2d');
-const fileInput = document.getElementById('file-input');
-const sizeSlider = document.getElementById('size-slider');
-const sizeVal = document.getElementById('size-val');
+// ── DOM ──
+const canvas  = document.getElementById('main-canvas');
+const ctx     = canvas.getContext('2d');
+const prevCvs = document.getElementById('ball-preview');
+const prevCtx = prevCvs.getContext('2d');
+const fileInput     = document.getElementById('file-input');
+const sizeSlider    = document.getElementById('size-slider');
+const sizeVal       = document.getElementById('size-val');
 const opacitySlider = document.getElementById('opacity-slider');
-const opacityVal = document.getElementById('opacity-val');
-const labelInput = document.getElementById('label-input');
-const ballList = document.getElementById('ball-list');
+const opacityVal    = document.getElementById('opacity-val');
+const labelInput    = document.getElementById('label-input');
+const charCount     = document.getElementById('char-count');
+const ballList      = document.getElementById('ball-list');
 const ballListEmpty = document.getElementById('ball-list-empty');
-const undoBtn = document.getElementById('undo-btn');
-const redoBtn = document.getElementById('redo-btn');
-const exportBtn = document.getElementById('export-btn');
-const zoomInfo = document.getElementById('zoom-info');
-const welcome = document.getElementById('welcome');
-const canvasArea = document.getElementById('canvas-area');
+const undoBtn       = document.getElementById('undo-btn');
+const redoBtn       = document.getElementById('redo-btn');
+const exportBtn     = document.getElementById('export-btn');
+const zoomInfo      = document.getElementById('zoom-info');
+const welcome       = document.getElementById('welcome');
+const canvasArea    = document.getElementById('canvas-area');
 
+// ── Preset colors ──
 const PRESET_COLORS = [
   '#c0392b','#e74c3c','#ff6b6b',
   '#e67e22','#f39c12','#f1c40f',
   '#27ae60','#16a085','#2980b9',
-  '#8e44ad','#2c3e50','#ecf0f1',
+  '#8e44ad','#2c3e50','#ffffff',
 ];
-
 function initColorGrid() {
   const grid = document.getElementById('color-grid');
   PRESET_COLORS.forEach(c => {
     const s = document.createElement('div');
     s.className = 'color-swatch' + (c === state.color ? ' active' : '');
     s.style.background = c;
+    s.style.border = c === '#ffffff' ? '2px solid #555' : '';
     s.onclick = () => setColor(c);
     grid.appendChild(s);
   });
 }
-
 function setColor(c) {
   state.color = c;
   document.getElementById('custom-color').value = c;
-  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-  const swatches = document.querySelectorAll('.color-swatch');
-  PRESET_COLORS.forEach((pc, i) => { if (pc === c) swatches[i].classList.add('active'); });
+  document.querySelectorAll('.color-swatch').forEach((s, i) => {
+    s.classList.toggle('active', PRESET_COLORS[i] === c);
+  });
   drawPreview();
 }
-
 document.getElementById('custom-color').addEventListener('input', e => {
   document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
-  state.color = e.target.value;
-  drawPreview();
+  state.color = e.target.value; drawPreview();
 });
 
+// ── Label color ──
+document.getElementById('label-color').addEventListener('input', e => {
+  state.labelColor = e.target.value;
+});
+
+// ── Position grid ──
+const POS_HINT = {
+  'top-left':'左上', 'top':'上方', 'top-right':'右上',
+  'left':'左方', 'right':'右方',
+  'bottom-left':'左下', 'bottom':'下方', 'bottom-right':'右下'
+};
+document.querySelectorAll('.pos-btn[data-pos]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pos-btn[data-pos]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.labelPos = btn.dataset.pos;
+    document.getElementById('pos-hint').textContent = POS_HINT[state.labelPos] || '';
+  });
+});
+
+// ── Line style ──
+document.querySelectorAll('.line-style-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.line-style-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.lineStyle = btn.dataset.lstyle;
+  });
+});
+
+// ── Textarea (Shift+Enter = newline, Enter does nothing special) ──
+labelInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    if (e.shiftKey) {
+      // allow newline
+    } else {
+      e.preventDefault(); // plain Enter does nothing
+    }
+  }
+});
+labelInput.addEventListener('input', () => {
+  // enforce 100 char (counting newlines)
+  if (labelInput.value.length > 100) labelInput.value = labelInput.value.slice(0, 100);
+  state.labelText = labelInput.value;
+  charCount.textContent = labelInput.value.length;
+});
+
+// ── Font size buttons ──
+document.querySelectorAll('.label-size-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.label-size-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.labelFontSize = parseInt(btn.dataset.fsize);
+  });
+});
+
+// ── 3D Ball renderer ──
 function draw3DBall(ctx2, cx, cy, r, hexColor, alpha) {
   if (r < 1) return;
-  alpha = alpha === undefined ? 1 : alpha;
-  ctx2.save();
-  ctx2.globalAlpha = alpha;
+  alpha = (alpha === undefined) ? 1 : alpha;
+  ctx2.save(); ctx2.globalAlpha = alpha;
   const br = parseInt(hexColor.slice(1,3),16);
   const bg = parseInt(hexColor.slice(3,5),16);
   const bb = parseInt(hexColor.slice(5,7),16);
-
-  // Drop shadow
+  // shadow
   ctx2.beginPath();
-  ctx2.ellipse(cx, cy + r * 0.85, r * 0.8, r * 0.22, 0, 0, Math.PI * 2);
-  const shGrad = ctx2.createRadialGradient(cx, cy + r*0.85, 0, cx, cy + r*0.85, r*0.8);
-  shGrad.addColorStop(0, 'rgba(0,0,0,0.38)');
-  shGrad.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx2.fillStyle = shGrad;
-  ctx2.fill();
-
-  // Body
-  const bodyGrad = ctx2.createRadialGradient(cx - r*0.3, cy - r*0.3, r*0.05, cx, cy, r);
-  bodyGrad.addColorStop(0, `rgba(${Math.min(255,br+90)},${Math.min(255,bg+90)},${Math.min(255,bb+90)},1)`);
-  bodyGrad.addColorStop(0.45, `rgba(${br},${bg},${bb},1)`);
-  bodyGrad.addColorStop(1, `rgba(${Math.max(0,br-80)},${Math.max(0,bg-80)},${Math.max(0,bb-80)},1)`);
-  ctx2.beginPath();
-  ctx2.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx2.fillStyle = bodyGrad;
-  ctx2.fill();
-
-  // Specular highlight
-  const hlx = cx - r*0.32, hly = cy - r*0.32;
-  const specGrad = ctx2.createRadialGradient(hlx, hly, 0, hlx, hly, r*0.38);
-  specGrad.addColorStop(0, 'rgba(255,255,255,0.88)');
-  specGrad.addColorStop(0.35, 'rgba(255,255,255,0.28)');
-  specGrad.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx2.beginPath();
-  ctx2.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx2.fillStyle = specGrad;
-  ctx2.fill();
-
-  // Rim light
-  const rimGrad = ctx2.createRadialGradient(cx+r*0.5, cy+r*0.5, 0, cx+r*0.5, cy+r*0.5, r*0.3);
-  rimGrad.addColorStop(0, 'rgba(255,255,255,0.25)');
-  rimGrad.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx2.beginPath();
-  ctx2.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx2.fillStyle = rimGrad;
-  ctx2.fill();
+  ctx2.ellipse(cx, cy + r*0.85, r*0.8, r*0.22, 0, 0, Math.PI*2);
+  const shG = ctx2.createRadialGradient(cx, cy+r*0.85, 0, cx, cy+r*0.85, r*0.8);
+  shG.addColorStop(0,'rgba(0,0,0,0.38)'); shG.addColorStop(1,'rgba(0,0,0,0)');
+  ctx2.fillStyle = shG; ctx2.fill();
+  // body
+  const bG = ctx2.createRadialGradient(cx-r*0.3, cy-r*0.3, r*0.05, cx, cy, r);
+  bG.addColorStop(0, `rgba(${Math.min(255,br+90)},${Math.min(255,bg+90)},${Math.min(255,bb+90)},1)`);
+  bG.addColorStop(0.45, `rgba(${br},${bg},${bb},1)`);
+  bG.addColorStop(1, `rgba(${Math.max(0,br-80)},${Math.max(0,bg-80)},${Math.max(0,bb-80)},1)`);
+  ctx2.beginPath(); ctx2.arc(cx, cy, r, 0, Math.PI*2);
+  ctx2.fillStyle = bG; ctx2.fill();
+  // specular
+  const sG = ctx2.createRadialGradient(cx-r*0.32, cy-r*0.32, 0, cx-r*0.32, cy-r*0.32, r*0.38);
+  sG.addColorStop(0,'rgba(255,255,255,0.88)'); sG.addColorStop(0.35,'rgba(255,255,255,0.28)'); sG.addColorStop(1,'rgba(255,255,255,0)');
+  ctx2.beginPath(); ctx2.arc(cx, cy, r, 0, Math.PI*2);
+  ctx2.fillStyle = sG; ctx2.fill();
+  // rim
+  const rG = ctx2.createRadialGradient(cx+r*0.5, cy+r*0.5, 0, cx+r*0.5, cy+r*0.5, r*0.3);
+  rG.addColorStop(0,'rgba(255,255,255,0.25)'); rG.addColorStop(1,'rgba(255,255,255,0)');
+  ctx2.beginPath(); ctx2.arc(cx, cy, r, 0, Math.PI*2);
+  ctx2.fillStyle = rG; ctx2.fill();
   ctx2.restore();
 }
 
-function drawPreview() {
-  const dpr = state.dpr;
-  previewCanvas.width = 60 * dpr; previewCanvas.height = 60 * dpr;
-  previewCanvas.style.width = '60px'; previewCanvas.style.height = '60px';
-  previewCtx.scale(dpr, dpr);
-  previewCtx.clearRect(0, 0, 60, 60);
-  const r = Math.min(state.size * 1.2, 26);
-  draw3DBall(previewCtx, 30, 30, r, state.color, state.opacity);
+// ── Label + indicator line renderer ──
+// Returns the anchor point on the ball edge and the label box origin
+function getLabelLayout(b, scale) {
+  const cx = b.x * scale, cy = b.y * scale, r = b.size * scale;
+  const gap = 10 * scale;   // gap between ball edge and text box
+  const pos = b.labelPos || 'top';
+
+  // Direction vector from center outward
+  const DIR = {
+    'top':          [0, -1], 'bottom':       [0,  1],
+    'left':         [-1, 0], 'right':        [ 1, 0],
+    'top-left':     [-0.707,-0.707], 'top-right':    [ 0.707,-0.707],
+    'bottom-left':  [-0.707, 0.707], 'bottom-right': [ 0.707, 0.707],
+  };
+  const [dx, dy] = DIR[pos] || [0, -1];
+
+  // Ball edge point (where line starts)
+  const edgeX = cx + dx * r;
+  const edgeY = cy + dy * r;
+
+  // Text box anchor point (where line ends, plus gap)
+  const anchorX = cx + dx * (r + gap);
+  const anchorY = cy + dy * (r + gap);
+
+  return { cx, cy, r, dx, dy, edgeX, edgeY, anchorX, anchorY, gap };
 }
 
+// Draw multi-line label text (transparent bg) + indicator line
+function drawLabel(ctx2, b, scale) {
+  if (!b.label && b.label !== '0') return;
+  const text = b.label;
+  if (!text) return;
+
+  const fs = (b.fontSize || 13) * scale;
+  const color = b.labelColor || '#ffffff';
+  const lineStyle = b.lineStyle || 'solid';
+  const layout = getLabelLayout(b, scale);
+  const { dx, dy, edgeX, edgeY, anchorX, anchorY } = layout;
+  const pos = b.labelPos || 'top';
+
+  // Prepare font
+  ctx2.font = `${fs}px 'Noto Serif TC', serif`;
+  ctx2.textBaseline = 'top';
+
+  // Split into lines
+  const lines = text.split('\n');
+  const lineH = fs * 1.6;
+  const maxW = Math.max(...lines.map(l => ctx2.measureText(l).width));
+  const totalH = lines.length * lineH;
+
+  // Compute text box top-left based on position
+  let boxX, boxY;
+  // Horizontal alignment
+  if (pos === 'right' || pos === 'top-right' || pos === 'bottom-right') {
+    boxX = anchorX;
+  } else if (pos === 'left' || pos === 'top-left' || pos === 'bottom-left') {
+    boxX = anchorX - maxW;
+  } else {
+    // top / bottom: center
+    boxX = anchorX - maxW / 2;
+  }
+  // Vertical alignment
+  if (pos === 'bottom' || pos === 'bottom-left' || pos === 'bottom-right') {
+    boxY = anchorY;
+  } else if (pos === 'top' || pos === 'top-left' || pos === 'top-right') {
+    boxY = anchorY - totalH;
+  } else {
+    // left / right: vertically center
+    boxY = anchorY - totalH / 2;
+  }
+
+  // ── Draw indicator line ──
+  if (lineStyle !== 'none') {
+    // Line endpoint: edge of text box closest to ball
+    let lineEndX = boxX + maxW / 2;
+    let lineEndY = boxY + totalH / 2;
+    if (pos === 'top')          { lineEndX = boxX + maxW/2; lineEndY = boxY + totalH; }
+    if (pos === 'bottom')       { lineEndX = boxX + maxW/2; lineEndY = boxY; }
+    if (pos === 'left')         { lineEndX = boxX + maxW;   lineEndY = boxY + totalH/2; }
+    if (pos === 'right')        { lineEndX = boxX;          lineEndY = boxY + totalH/2; }
+    if (pos === 'top-left')     { lineEndX = boxX + maxW;   lineEndY = boxY + totalH; }
+    if (pos === 'top-right')    { lineEndX = boxX;          lineEndY = boxY + totalH; }
+    if (pos === 'bottom-left')  { lineEndX = boxX + maxW;   lineEndY = boxY; }
+    if (pos === 'bottom-right') { lineEndX = boxX;          lineEndY = boxY; }
+
+    ctx2.save();
+    ctx2.strokeStyle = color;
+    ctx2.lineWidth = Math.max(1, 1.2 * scale);
+    if (lineStyle === 'dashed') {
+      ctx2.setLineDash([4 * scale, 3 * scale]);
+    } else {
+      ctx2.setLineDash([]);
+    }
+    ctx2.globalAlpha = 0.75;
+    ctx2.beginPath();
+    ctx2.moveTo(edgeX, edgeY);
+    ctx2.lineTo(lineEndX, lineEndY);
+    ctx2.stroke();
+    ctx2.setLineDash([]);
+    ctx2.restore();
+  }
+
+  // ── Draw text (no background, transparent) ──
+  ctx2.save();
+  ctx2.font = `${fs}px 'Noto Serif TC', serif`;
+  ctx2.textBaseline = 'top';
+  ctx2.fillStyle = color;
+  // Subtle text shadow for legibility on any background
+  ctx2.shadowColor = 'rgba(0,0,0,0.85)';
+  ctx2.shadowBlur = Math.max(3, 4 * scale);
+  ctx2.shadowOffsetX = 0;
+  ctx2.shadowOffsetY = 0;
+  lines.forEach((line, i) => {
+    ctx2.fillText(line, boxX, boxY + i * lineH);
+  });
+  ctx2.restore();
+}
+
+// ── Preview ──
+function drawPreview() {
+  const dpr = state.dpr;
+  prevCvs.width = 60 * dpr; prevCvs.height = 60 * dpr;
+  prevCvs.style.width = '60px'; prevCvs.style.height = '60px';
+  prevCtx.scale(dpr, dpr);
+  prevCtx.clearRect(0, 0, 60, 60);
+  const r = Math.min(state.size * 1.2, 26);
+  draw3DBall(prevCtx, 30, 30, r, state.color, state.opacity);
+}
+
+// ── Canvas setup ──
 function setupCanvas(img) {
-  state.img = img;
-  state.imgW = img.naturalWidth;
-  state.imgH = img.naturalHeight;
+  state.img = img; state.imgW = img.naturalWidth; state.imgH = img.naturalHeight;
   welcome.style.display = 'none';
   const area = canvasArea.getBoundingClientRect();
   const maxW = area.width - 40, maxH = area.height - 40;
   state.scale = Math.min(1, maxW / state.imgW, maxH / state.imgH);
   const dispW = Math.round(state.imgW * state.scale);
   const dispH = Math.round(state.imgH * state.scale);
-  canvas.style.width = dispW + 'px';
+  canvas.style.width  = dispW + 'px';
   canvas.style.height = dispH + 'px';
-  canvas.width = dispW * state.dpr;
+  canvas.width  = dispW * state.dpr;
   canvas.height = dispH * state.dpr;
   ctx.scale(state.dpr, state.dpr);
-  zoomInfo.textContent = state.imgW + '\xd7' + state.imgH + 'px  |  縮放 ' + Math.round(state.scale*100) + '%';
+  zoomInfo.textContent = state.imgW + '×' + state.imgH + 'px  |  ' + Math.round(state.scale*100) + '%';
   redraw();
   exportBtn.disabled = false;
-  document.getElementById('file-info').textContent = state.imgW + ' \xd7 ' + state.imgH;
+  document.getElementById('file-info').textContent = state.imgW + ' × ' + state.imgH;
 }
 
-function roundRect(ctx2, x, y, w, h, r2) {
-  ctx2.beginPath();
-  ctx2.moveTo(x+r2, y);
-  ctx2.lineTo(x+w-r2, y);
-  ctx2.quadraticCurveTo(x+w, y, x+w, y+r2);
-  ctx2.lineTo(x+w, y+h-r2);
-  ctx2.quadraticCurveTo(x+w, y+h, x+w-r2, y+h);
-  ctx2.lineTo(x+r2, y+h);
-  ctx2.quadraticCurveTo(x, y+h, x, y+h-r2);
-  ctx2.lineTo(x, y+r2);
-  ctx2.quadraticCurveTo(x, y, x+r2, y);
-  ctx2.closePath();
-}
-
-function drawLabel(ctx2, b, scale) {
-  if (!b.label) return;
-  const fs = b.fontSize * scale;
-  ctx2.font = fs + "px 'Noto Serif TC', serif";
-  ctx2.textAlign = 'center';
-  ctx2.textBaseline = 'top';
-  const cx = b.x * scale, cy = b.y * scale, r = b.size * scale;
-  const lx = cx, ly = cy + r + 4 * scale;
-  const tw = ctx2.measureText(b.label).width;
-  const pad = 4 * scale;
-  ctx2.fillStyle = 'rgba(0,0,0,0.65)';
-  roundRect(ctx2, lx - tw/2 - pad, ly - pad/2, tw + pad*2, fs + pad, 3 * scale);
-  ctx2.fill();
-  ctx2.fillStyle = '#ffffff';
-  ctx2.fillText(b.label, lx, ly);
-}
-
+// ── Redraw ──
 function redraw() {
   if (!state.img) return;
-  const dispW = canvas.width / state.dpr;
-  const dispH = canvas.height / state.dpr;
-  ctx.clearRect(0, 0, dispW, dispH);
-  ctx.drawImage(state.img, 0, 0, dispW, dispH);
+  const dW = canvas.width / state.dpr, dH = canvas.height / state.dpr;
+  ctx.clearRect(0, 0, dW, dH);
+  ctx.drawImage(state.img, 0, 0, dW, dH);
   state.balls.forEach(b => {
     const cx = b.x * state.scale, cy = b.y * state.scale, r = b.size * state.scale;
+    // selection ring
     if (b.id === state.selectedId) {
-      ctx.beginPath();
-      ctx.arc(cx, cy, r + 4, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255,255,255,0.7)';
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([4,3]);
-      ctx.stroke();
-      ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(cx, cy, r + 4, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1.5;
+      ctx.setLineDash([4,3]); ctx.stroke(); ctx.setLineDash([]);
     }
     draw3DBall(ctx, cx, cy, r, b.color, b.opacity);
     drawLabel(ctx, b, state.scale);
   });
 }
 
+// ── Mouse helpers ──
 function canvasXY(e) {
   const rect = canvas.getBoundingClientRect();
   return { x: (e.clientX - rect.left) / state.scale, y: (e.clientY - rect.top) / state.scale };
 }
-
 function hitTest(x, y) {
   for (let i = state.balls.length - 1; i >= 0; i--) {
     const b = state.balls[i];
@@ -388,6 +610,7 @@ function hitTest(x, y) {
   return null;
 }
 
+// ── Canvas events ──
 canvas.addEventListener('mousedown', e => {
   if (!state.img) return;
   const {x, y} = canvasXY(e);
@@ -397,13 +620,19 @@ canvas.addEventListener('mousedown', e => {
     state.dragOffX = x - hit.x; state.dragOffY = y - hit.y;
     updateBallList(); redraw(); e.preventDefault();
   } else {
-    const ball = { id: nextId++, x, y, size: state.size, color: state.color, opacity: state.opacity, label: state.labelText, fontSize: state.labelFontSize };
+    // place new ball
+    const ball = {
+      id: nextId++, x, y,
+      size: state.size, color: state.color, opacity: state.opacity,
+      label: state.labelText, fontSize: state.labelFontSize,
+      labelColor: state.labelColor,
+      labelPos: state.labelPos, lineStyle: state.lineStyle,
+    };
     state.balls.push(ball);
     state.selectedId = ball.id;
     pushHistory(); updateBallList(); redraw();
   }
 });
-
 canvas.addEventListener('mousemove', e => {
   if (!state.img) return;
   const {x, y} = canvasXY(e);
@@ -414,8 +643,7 @@ canvas.addEventListener('mousemove', e => {
     canvas.style.cursor = hitTest(x, y) ? 'move' : 'crosshair';
   }
 });
-
-canvas.addEventListener('mouseup', () => { if (state.dragId !== null) { pushHistory(); state.dragId = null; } });
+canvas.addEventListener('mouseup',    () => { if (state.dragId !== null) { pushHistory(); state.dragId = null; } });
 canvas.addEventListener('mouseleave', () => { if (state.dragId !== null) { pushHistory(); state.dragId = null; } });
 canvas.addEventListener('contextmenu', e => {
   e.preventDefault();
@@ -429,24 +657,33 @@ canvas.addEventListener('contextmenu', e => {
   }
 });
 
+// ── Ball list ──
 function updateBallList() {
   ballListEmpty.style.display = state.balls.length === 0 ? '' : 'none';
   ballList.innerHTML = '';
   [...state.balls].reverse().forEach(b => {
     const div = document.createElement('div');
     div.className = 'ball-item' + (b.id === state.selectedId ? ' selected' : '');
-    div.innerHTML = '<div class="ball-dot" style="background:' + b.color + '"></div><div class="ball-name">' + (b.label || '（無標籤）') + '</div><div class="ball-size-text">' + b.size + 'px</div><button class="ball-del" title="刪除">\xd7</button>';
+    const labelDisplay = b.label ? b.label.replace(/\n/g, ' ') : '（無標籤）';
+    div.innerHTML =
+      '<div class="ball-dot" style="background:' + b.color + '"></div>' +
+      '<div class="ball-name" title="' + labelDisplay + '">' + labelDisplay + '</div>' +
+      '<div class="ball-size-text">' + b.size + 'px</div>' +
+      '<button class="ball-del" title="刪除">×</button>';
     div.addEventListener('click', ev => {
       if (ev.target.classList.contains('ball-del')) {
         state.balls = state.balls.filter(x => x.id !== b.id);
         if (state.selectedId === b.id) state.selectedId = null;
         pushHistory(); updateBallList(); redraw();
-      } else { state.selectedId = b.id; updateBallList(); redraw(); }
+      } else {
+        state.selectedId = b.id; updateBallList(); redraw();
+      }
     });
     ballList.appendChild(div);
   });
 }
 
+// ── History ──
 function pushHistory() {
   const snap = JSON.stringify(state.balls.map(b => Object.assign({}, b)));
   state.history = state.history.slice(0, state.historyIdx + 1);
@@ -454,27 +691,32 @@ function pushHistory() {
   state.historyIdx = state.history.length - 1;
   updateHistoryBtns();
 }
-function undo() { if (state.historyIdx <= 0) return; state.historyIdx--; state.balls = JSON.parse(state.history[state.historyIdx]); state.selectedId = null; updateBallList(); redraw(); updateHistoryBtns(); }
-function redo() { if (state.historyIdx >= state.history.length - 1) return; state.historyIdx++; state.balls = JSON.parse(state.history[state.historyIdx]); state.selectedId = null; updateBallList(); redraw(); updateHistoryBtns(); }
-function updateHistoryBtns() { undoBtn.disabled = state.historyIdx <= 0; redoBtn.disabled = state.historyIdx >= state.history.length - 1; }
-
+function undo() {
+  if (state.historyIdx <= 0) return;
+  state.historyIdx--;
+  state.balls = JSON.parse(state.history[state.historyIdx]);
+  state.selectedId = null; updateBallList(); redraw(); updateHistoryBtns();
+}
+function redo() {
+  if (state.historyIdx >= state.history.length - 1) return;
+  state.historyIdx++;
+  state.balls = JSON.parse(state.history[state.historyIdx]);
+  state.selectedId = null; updateBallList(); redraw(); updateHistoryBtns();
+}
+function updateHistoryBtns() {
+  undoBtn.disabled = state.historyIdx <= 0;
+  redoBtn.disabled = state.historyIdx >= state.history.length - 1;
+}
 document.getElementById('undo-btn').onclick = undo;
 document.getElementById('redo-btn').onclick = redo;
 
+// ── Controls ──
 sizeSlider.addEventListener('input', () => { state.size = parseInt(sizeSlider.value); sizeVal.textContent = state.size; drawPreview(); });
 opacitySlider.addEventListener('input', () => { state.opacity = parseInt(opacitySlider.value)/100; opacityVal.textContent = opacitySlider.value + '%'; drawPreview(); });
-labelInput.addEventListener('input', () => { state.labelText = labelInput.value; });
-document.querySelectorAll('.label-size-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.label-size-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.labelFontSize = parseInt(btn.dataset.fsize);
-  });
-});
 
+// ── Load ──
 document.getElementById('load-btn').onclick = () => fileInput.click();
 fileInput.addEventListener('change', e => { const f = e.target.files[0]; if (f) loadFile(f); fileInput.value = ''; });
-
 function loadFile(file) {
   if (!file.type.startsWith('image/')) { showToast('請選擇圖片檔案'); return; }
   const url = URL.createObjectURL(file);
@@ -486,41 +728,31 @@ function loadFile(file) {
   img.src = url;
 }
 
+// ── Drag & drop ──
 const dropOverlay = document.getElementById('drop-overlay');
 document.addEventListener('dragover', e => { e.preventDefault(); dropOverlay.classList.add('active'); });
 document.addEventListener('dragleave', e => { if (!e.relatedTarget) dropOverlay.classList.remove('active'); });
 document.addEventListener('drop', e => { e.preventDefault(); dropOverlay.classList.remove('active'); const f = e.dataTransfer.files[0]; if (f) loadFile(f); });
 
+// ── Export ──
 document.querySelectorAll('.fmt-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.fmt-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    state.exportFmt = btn.dataset.fmt;
+    btn.classList.add('active'); state.exportFmt = btn.dataset.fmt;
   });
 });
-
 document.getElementById('export-btn').onclick = () => {
   if (!state.img) return;
   const off = document.createElement('canvas');
   off.width = state.imgW; off.height = state.imgH;
   const offCtx = off.getContext('2d');
   offCtx.drawImage(state.img, 0, 0, state.imgW, state.imgH);
+  // render balls at 1:1 scale (no scale factor)
   state.balls.forEach(b => {
     draw3DBall(offCtx, b.x, b.y, b.size, b.color, b.opacity);
-    if (b.label) {
-      const fs = b.fontSize;
-      offCtx.font = fs + "px 'Noto Serif TC', serif";
-      offCtx.textAlign = 'center';
-      offCtx.textBaseline = 'top';
-      const lx = b.x, ly = b.y + b.size + 4;
-      const tw = offCtx.measureText(b.label).width;
-      const pad = 4;
-      offCtx.fillStyle = 'rgba(0,0,0,0.65)';
-      roundRect(offCtx, lx - tw/2 - pad, ly - pad/2, tw + pad*2, fs + pad, 3);
-      offCtx.fill();
-      offCtx.fillStyle = '#ffffff';
-      offCtx.fillText(b.label, lx, ly);
-    }
+    // draw label at scale=1
+    const saved = b;
+    drawLabel(offCtx, b, 1);
   });
   const mime = {png:'image/png', jpeg:'image/jpeg', webp:'image/webp'}[state.exportFmt];
   const quality = state.exportFmt === 'png' ? undefined : 0.92;
@@ -528,17 +760,19 @@ document.getElementById('export-btn').onclick = () => {
   a.href = off.toDataURL(mime, quality);
   a.download = 'acupuncture_' + Date.now() + '.' + state.exportFmt;
   a.click();
-  showToast('已匯出 ' + state.exportFmt.toUpperCase() + ' 影像（' + state.imgW + '\xd7' + state.imgH + '）');
+  showToast('已匯出 ' + state.exportFmt.toUpperCase() + '（' + state.imgW + '×' + state.imgH + '）');
 };
 
+// ── Clear ──
 document.getElementById('clear-btn').onclick = () => {
-  if (state.balls.length === 0) return;
+  if (!state.balls.length) return;
   state.balls = []; state.selectedId = null;
   pushHistory(); updateBallList(); redraw(); showToast('已清除所有圓球');
 };
 
+// ── Keyboard ──
 document.addEventListener('keydown', e => {
-  if (e.target.tagName === 'INPUT') return;
+  if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
   if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); redo(); }
   if ((e.key === 'Delete' || e.key === 'Backspace') && state.selectedId !== null) {
@@ -548,6 +782,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ── Toast ──
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -556,9 +791,8 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-initColorGrid();
-drawPreview();
-pushHistory();
+// ── Init ──
+initColorGrid(); drawPreview(); pushHistory();
 </script>
 </body>
 </html>
